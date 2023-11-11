@@ -6,9 +6,9 @@ import (
 	"math/big"
 	"time"
 
+	"github.com/JasZal/gofe/data"
+	"github.com/JasZal/gofe/innerprod/noisy"
 	"github.com/fentec-project/bn256"
-	"github.com/fentec-project/gofe/data"
-	"github.com/fentec-project/gofe/innerprod/fullysec"
 	"github.com/google/differential-privacy/go/v2/noise"
 )
 
@@ -19,8 +19,8 @@ type OTNHAuthority struct {
 	boundX       *big.Int
 	boundY       *big.Int
 	pubKey       *bn256.GT
-	masterSecKey *fullysec.OTNHMultiIPESecKey
-	OTNHmulti    *fullysec.OTNHMultiIPE
+	masterSecKey *noisy.OTNHMultiIPESecKey
+	OTNHmulti    *noisy.OTNHMultiIPE
 	epsilon      float64
 	scaling      int64
 }
@@ -37,19 +37,19 @@ func NewOTNHAuthority(secL int, vecL int, numC int, bX, bY *big.Int, e float64, 
 	}
 
 	start := time.Now()
-	a.OTNHmulti = fullysec.NewOTNHMultiIPE(a.secLevel, a.numClient, a.vecLen, a.boundX, a.boundY)
+	a.OTNHmulti = noisy.NewOTNHMultiIPE(a.secLevel, a.numClient, a.vecLen, a.boundX, a.boundY)
 	timeSetup := time.Since(start)
 	a.masterSecKey, a.pubKey, _ = a.OTNHmulti.GenerateKeys()
 
 	return a, timeSetup
 }
 
-//TODO
+// TODO
 func computeL0SensitivityOTNH(y data.Matrix) int64 {
 	return 1.0
 }
 
-//TODO
+// TODO
 func computeLInfSensitivityOTNH(y data.Matrix) float64 {
 	return 1.0
 }
@@ -93,6 +93,6 @@ func (a OTNHAuthority) getOTNHSecretKey(pos int) data.Matrix {
 	return a.masterSecKey.BHat[pos]
 }
 
-func (a OTNHAuthority) getOTNHPublicParams() *fullysec.OTNHMultiIPE {
+func (a OTNHAuthority) getOTNHPublicParams() *noisy.OTNHMultiIPE {
 	return a.OTNHmulti
 }

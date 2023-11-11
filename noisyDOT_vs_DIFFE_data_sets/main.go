@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 	"math/big"
-	"math/rand"
 	"os"
 )
 
@@ -19,12 +18,12 @@ func main() {
 	rounds := 1
 
 	test_realData(secLevel, rounds, scaling, epsilon, debug, append)
-	test_randomData(secLevel, rounds, scaling, epsilon, debug, append)
+	//	test_randomData(secLevel, rounds, scaling, epsilon, debug, append)
 
 }
 
 func test_realData(secLevel, rounds int, scaling int64, epsilon float64, debug, append bool) {
-	dbfilename := []string{"lbw.csv", "pcs.csv", "uis.csv", "nhanes3.csv"}
+	dbfilename := []string{"datasets/lbw.csv", "datasets/pcs.csv", "datasets/uis.csv", "datasets/nhanes3.csv"}
 	//the value by which the coordinates of encrypted vectors are bounded, for each dataset
 	bounds := []int64{5000, 150, 60, 750} //
 	//nahnes, pcs minscaling = 10,
@@ -94,6 +93,8 @@ func test_realData(secLevel, rounds int, scaling int64, epsilon float64, debug, 
 
 	}
 }
+
+/*
 
 func test_randomData(secLevel, rounds int, scaling int64, epsilon float64, debug, append bool) {
 
@@ -208,7 +209,7 @@ func test_randomData(secLevel, rounds int, scaling int64, epsilon float64, debug
 		write(fileOT, "]\n", append)
 
 	}
-}
+}*/
 
 func write(filename string, message string, append bool) {
 

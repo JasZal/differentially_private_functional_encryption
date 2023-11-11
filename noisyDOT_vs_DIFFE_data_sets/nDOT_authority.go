@@ -6,9 +6,9 @@ import (
 	"math/big"
 	"time"
 
+	"github.com/JasZal/gofe/data"
+	"github.com/JasZal/gofe/innerprod/noisy"
 	"github.com/fentec-project/bn256"
-	"github.com/fentec-project/gofe/data"
-	"github.com/fentec-project/gofe/innerprod/fullysec"
 	"github.com/google/differential-privacy/go/v2/noise"
 )
 
@@ -19,8 +19,8 @@ type NHAuthority struct {
 	boundX       *big.Int
 	boundY       *big.Int
 	pubKey       *bn256.GT
-	masterSecKey *fullysec.NHMultiIPESecKey
-	NHmulti      *fullysec.NHMultiIPE
+	masterSecKey *noisy.NHMultiIPESecKey
+	NHmulti      *noisy.NHMultiIPE
 	epsilon      float64
 	scaling      int64
 }
@@ -37,19 +37,19 @@ func NewNHAuthority(secL int, vecL int, numC int, bX, bY *big.Int, e float64, sc
 	}
 
 	start := time.Now()
-	a.NHmulti = fullysec.NewNHMultiIPE(a.secLevel, a.numClient, a.vecLen, a.boundX, a.boundY)
+	a.NHmulti = noisy.NewNHMultiIPE(a.secLevel, a.numClient, a.vecLen, a.boundX, a.boundY)
 	timeSetup := time.Since(start)
 	a.masterSecKey, a.pubKey, _ = a.NHmulti.GenerateKeys()
 
 	return a, timeSetup
 }
 
-//TODO
+// TODO
 func computeL0SensitivityNH(y data.Matrix) int64 {
 	return 1.0
 }
 
-//TODO
+// TODO
 func computeLInfSensitivityNH(y data.Matrix) float64 {
 	return 1.0
 }
@@ -93,6 +93,6 @@ func (a NHAuthority) getNHSecretKey(pos int) data.Matrix {
 	return a.masterSecKey.BHat[pos]
 }
 
-func (a NHAuthority) getNHPublicParams() *fullysec.NHMultiIPE {
+func (a NHAuthority) getNHPublicParams() *noisy.NHMultiIPE {
 	return a.NHmulti
 }

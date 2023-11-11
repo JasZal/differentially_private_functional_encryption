@@ -5,9 +5,9 @@ import (
 	"math/big"
 	"time"
 
+	"github.com/JasZal/gofe/data"
+	"github.com/JasZal/gofe/innerprod/noisy"
 	"github.com/fentec-project/bn256"
-	"github.com/fentec-project/gofe/data"
-	"github.com/fentec-project/gofe/innerprod/fullysec"
 )
 
 type NHEvaluator struct {
@@ -15,10 +15,10 @@ type NHEvaluator struct {
 	numClient int
 	y         data.Matrix
 	pubKey    *bn256.GT
-	nhmulti   *fullysec.NHMultiIPE
+	nhmulti   *noisy.NHMultiIPE
 }
 
-func NewNHEvaluator(a int, numC int, pk *bn256.GT, fh *fullysec.NHMultiIPE) *NHEvaluator {
+func NewNHEvaluator(a int, numC int, pk *bn256.GT, fh *noisy.NHMultiIPE) *NHEvaluator {
 	e := &NHEvaluator{
 		attr:      a,
 		numClient: numC,
@@ -50,7 +50,7 @@ func (e *NHEvaluator) evaluateNH(a *NHAuthority, cipher data.MatrixG1, eps float
 		return nil, 0, 0, err
 	}
 
-	decryptor := fullysec.NewNHMultiIPEFromParams(e.nhmulti.Params)
+	decryptor := noisy.NewNHMultiIPEFromParams(e.nhmulti.Params)
 	start = time.Now()
 	xy, err := decryptor.Decrypt(cipher, funcKey, e.pubKey)
 	timeEval := time.Since(start)

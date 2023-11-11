@@ -1,0 +1,4 @@
+scaling=100000, avTime in Setup=Nanoseconds, Enc=Microseconds, KeyGen=Eval=Milliseconds 
+Setup, Encryption, KeyGen, Evaluation
+datasets/lbw.csv- noisyDOT = [844,3178,1939,7935]
+datasets/lbw.csv- DIFFE = [575,2028,1467,5075]

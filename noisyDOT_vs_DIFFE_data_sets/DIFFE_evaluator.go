@@ -5,9 +5,9 @@ import (
 	"math/big"
 	"time"
 
+	"github.com/JasZal/gofe/data"
+	"github.com/JasZal/gofe/innerprod/noisy"
 	"github.com/fentec-project/bn256"
-	"github.com/fentec-project/gofe/data"
-	"github.com/fentec-project/gofe/innerprod/fullysec"
 )
 
 type OTNHEvaluator struct {
@@ -15,10 +15,10 @@ type OTNHEvaluator struct {
 	numClient int
 	y         data.Matrix
 	pubKey    *bn256.GT
-	OTNHmulti *fullysec.OTNHMultiIPE
+	OTNHmulti *noisy.OTNHMultiIPE
 }
 
-func NewOTNHEvaluator(a int, numC int, pk *bn256.GT, fh *fullysec.OTNHMultiIPE) *OTNHEvaluator {
+func NewOTNHEvaluator(a int, numC int, pk *bn256.GT, fh *noisy.OTNHMultiIPE) *OTNHEvaluator {
 	e := &OTNHEvaluator{
 		attr:      a,
 		numClient: numC,
@@ -50,7 +50,7 @@ func (e *OTNHEvaluator) evaluateOTNH(a *OTNHAuthority, cipher data.MatrixG1, eps
 		return nil, 0, 0, err
 	}
 
-	decryptor := fullysec.NewOTNHMultiIPEFromParams(e.OTNHmulti.Params)
+	decryptor := noisy.NewOTNHMultiIPEFromParams(e.OTNHmulti.Params)
 	start = time.Now()
 	xy, err := decryptor.Decrypt(cipher, funcKey, e.pubKey)
 	timeEval := time.Since(start)

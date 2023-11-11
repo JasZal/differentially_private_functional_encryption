@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/fentec-project/gofe/data"
+	"github.com/JasZal/gofe/data"
 )
 
 func debug(s string, deb bool) {
