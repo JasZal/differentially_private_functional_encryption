@@ -8,9 +8,9 @@ import (
 	"os"
 	"time"
 
-	"github.com/fentec-project/gofe/data"
-	"github.com/fentec-project/gofe/innerprod/fullysec"
-	"github.com/fentec-project/gofe/sample"
+	"github.com/JasZal/gofe/data"
+	"github.com/JasZal/gofe/innerprod/noisy"
+	"github.com/JasZal/gofe/sample"
 )
 
 var deb bool = true
@@ -21,6 +21,7 @@ func debug(s string, deb bool) {
 	}
 }
 
+/* this function writes the data into files*/
 func write(filename string, message string, append bool) {
 
 	var file *os.File
@@ -46,8 +47,8 @@ func write(filename string, message string, append bool) {
 
 func main() {
 	//attributes to set for whished attribute range and client range
-	attributesR := []int{1, 10, 20, 25}
-	clientsR := []int{1, 10, 20, 25}
+	attributesR := []int{5, 10, 20, 25}
+	clientsR := []int{5, 10, 20, 25}
 
 	//security Level k = 2
 	secLevel := 2
@@ -80,16 +81,17 @@ func main() {
 
 			debug(fmt.Sprintf("attributes: %d, clients: %d\n", attributes, clients), deb)
 
+			//Attributes for time measurements
 			var fh_time_Setup, fh_time_Enc, fh_time_KeyGen, fh_time_Dec, nh_time_Setup, nh_time_Enc, nh_time_KeyGen, nh_time_Dec int64
 
 			for i := 1; i <= rounds; i++ {
 
 				debug(fmt.Sprintf("round %d \n", i), deb)
-				t_fh_time_Setup, t_fh_time_Enc, t_fh_time_KeyGen, t_fh_time_Dec, err_fh := testFHMIPE(clients, attributes, secLevel, x)
+				t_fh_time_Setup, t_fh_time_Enc, t_fh_time_KeyGen, t_fh_time_Dec, err_fh := testNHMIPE(clients, attributes, secLevel, x)
 				if err_fh != nil {
 					failed_fh += 1
 				}
-				t_nh_time_Setup, t_nh_time_Enc, t_nh_time_KeyGen, t_nh_time_Dec, err_nh := testNHMIPE(clients, attributes, secLevel, x)
+				t_nh_time_Setup, t_nh_time_Enc, t_nh_time_KeyGen, t_nh_time_Dec, err_nh := testOTNHMIPE(clients, attributes, secLevel, x)
 				if err_nh != nil {
 					failed_nh += 1
 				}
@@ -116,7 +118,7 @@ func main() {
 
 }
 
-func testFHMIPE(clients, attributes int, secLevel int, x data.Matrix) (time.Duration, time.Duration, time.Duration, time.Duration, error) {
+func testNHMIPE(clients, attributes int, secLevel int, x data.Matrix) (time.Duration, time.Duration, time.Duration, time.Duration, error) {
 
 	boundX := big.NewInt(100)
 	boundY := big.NewInt(1)
@@ -126,7 +128,7 @@ func testFHMIPE(clients, attributes int, secLevel int, x data.Matrix) (time.Dura
 
 	//generate Authority with Params and Keys
 	start := time.Now()
-	a_fhmulti := fullysec.NewFHMultiIPE(secLevel, clients, attributes, boundX, boundY)
+	a_fhmulti := noisy.NewNHMultiIPE(secLevel, clients, attributes, boundX, boundY)
 	a_masterSecKey, a_pubKey, _ := a_fhmulti.GenerateKeys()
 	timeSetup := time.Since(start)
 
@@ -135,12 +137,12 @@ func testFHMIPE(clients, attributes int, secLevel int, x data.Matrix) (time.Dura
 	for i := 0; i < clients; i++ {
 		if i == 0 {
 
-			client := fullysec.NewFHMultiIPEFromParams(a_fhmulti.Params)
+			client := noisy.NewNHMultiIPEFromParams(a_fhmulti.Params)
 			start = time.Now()
 			cipher[i], _ = client.Encrypt(x[i], a_masterSecKey.BHat[i])
 			timeEnc = time.Since(start)
 		} else {
-			client := fullysec.NewFHMultiIPEFromParams(a_fhmulti.Params)
+			client := noisy.NewNHMultiIPEFromParams(a_fhmulti.Params)
 			cipher[i], _ = client.Encrypt(x[i], a_masterSecKey.BHat[i])
 		}
 
@@ -156,8 +158,11 @@ func testFHMIPE(clients, attributes int, secLevel int, x data.Matrix) (time.Dura
 
 	//time to generate key
 
+	rand.Seed(time.Now().UnixNano())
+	noise := rand.Int63n(21) - 10 //range -10 - 10
+
 	start = time.Now()
-	funcKey, err := a_fhmulti.DeriveKey(y, a_masterSecKey)
+	funcKey, err := a_fhmulti.DeriveKey(y, a_masterSecKey, noise)
 	timeFK := time.Since(start)
 
 	if err != nil {
@@ -165,7 +170,7 @@ func testFHMIPE(clients, attributes int, secLevel int, x data.Matrix) (time.Dura
 		return 0, 0, 0, 0, err
 	}
 
-	decryptor := fullysec.NewFHMultiIPEFromParams(a_fhmulti.Params)
+	decryptor := noisy.NewNHMultiIPEFromParams(a_fhmulti.Params)
 
 	start = time.Now()
 	xy, err := decryptor.Decrypt(cipher, funcKey, a_pubKey)
@@ -182,7 +187,7 @@ func testFHMIPE(clients, attributes int, secLevel int, x data.Matrix) (time.Dura
 	return timeSetup, timeEnc, timeFK, timeD, nil
 }
 
-func testNHMIPE(clients, attributes int, secLevel int, x data.Matrix) (time.Duration, time.Duration, time.Duration, time.Duration, error) {
+func testOTNHMIPE(clients, attributes int, secLevel int, x data.Matrix) (time.Duration, time.Duration, time.Duration, time.Duration, error) {
 
 	boundX := big.NewInt(100)
 	boundY := big.NewInt(1)
@@ -192,7 +197,7 @@ func testNHMIPE(clients, attributes int, secLevel int, x data.Matrix) (time.Dura
 
 	//generate Authority with Params and Keys
 	start := time.Now()
-	a_otnhmulti := fullysec.NewOTNHMultiIPE(secLevel, clients, attributes, boundX, boundY)
+	a_otnhmulti := noisy.NewOTNHMultiIPE(secLevel, clients, attributes, boundX, boundY)
 	a_masterSecKey, a_pubKey, _ := a_otnhmulti.GenerateKeys()
 	timeSetup := time.Since(start)
 
@@ -200,12 +205,12 @@ func testNHMIPE(clients, attributes int, secLevel int, x data.Matrix) (time.Dura
 	//generate numClient Clients and fill cipher
 	for i := 0; i < clients; i++ {
 		if i == 0 {
-			client := fullysec.NewOTNHMultiIPEFromParams(a_otnhmulti.Params)
+			client := noisy.NewOTNHMultiIPEFromParams(a_otnhmulti.Params)
 			start = time.Now()
 			cipher[i], _ = client.Encrypt(x[i], a_masterSecKey.BHat[i])
 			timeEnc = time.Since(start)
 		} else {
-			client := fullysec.NewOTNHMultiIPEFromParams(a_otnhmulti.Params)
+			client := noisy.NewOTNHMultiIPEFromParams(a_otnhmulti.Params)
 			cipher[i], _ = client.Encrypt(x[i], a_masterSecKey.BHat[i])
 		}
 
@@ -231,7 +236,7 @@ func testNHMIPE(clients, attributes int, secLevel int, x data.Matrix) (time.Dura
 		return 0, 0, 0, 0, err
 	}
 
-	decryptor := fullysec.NewOTNHMultiIPEFromParams(a_otnhmulti.Params)
+	decryptor := noisy.NewOTNHMultiIPEFromParams(a_otnhmulti.Params)
 
 	start = time.Now()
 	xy, err := decryptor.Decrypt(cipher, funcKey, a_pubKey)
