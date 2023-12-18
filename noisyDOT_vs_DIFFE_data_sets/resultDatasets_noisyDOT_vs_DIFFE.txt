@@ -1,2 +1,0 @@
-scaling=100000, avTime in Setup=Nanoseconds, Enc=Microseconds, KeyGen=Eval=Milliseconds 
-Setup, Encryption, KeyGen, Evaluation

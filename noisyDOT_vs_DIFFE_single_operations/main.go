@@ -47,18 +47,18 @@ func write(filename string, message string, append bool) {
 
 func main() {
 	//attributes to set for whished attribute range and client range
-	attributesR := []int{5, 10, 20, 25}
-	clientsR := []int{5, 10, 20, 25}
+	attributesR := []int{5, 10, 20, 30}
+	clientsR := []int{5, 10, 20, 30}
 
 	//security Level k = 2
 	secLevel := 2
 	append := false
 
 	//rounds over that the average should be computed
-	rounds := 4
+	rounds := 3
 
-	file_noisyDOT := "noisy_DOT.txt"
-	file_DIFFE := "DIFFE.txt"
+	file_noisyDOT := "results_noisy_DOT.txt"
+	file_DIFFE := "results_DiffPIPE.txt"
 
 	if !append {
 
@@ -70,7 +70,7 @@ func main() {
 	for _, attributes := range attributesR {
 
 		write(file_noisyDOT, fmt.Sprintf("noisyDOT_attr%d = [\n", attributes), true)
-		write(file_DIFFE, fmt.Sprintf("DIFFE_attr%d = [\n", attributes), true)
+		write(file_DIFFE, fmt.Sprintf("DiffPIPE_attr%d = [\n", attributes), true)
 
 		for _, clients := range clientsR {
 			failed_fh := 0

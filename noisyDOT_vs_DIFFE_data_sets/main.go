@@ -31,7 +31,7 @@ func test_realData(secLevel, rounds int, scaling int64, epsilon float64, debug, 
 	//the value by which the coordinates of encrypted vectors are bounded, for each dataset
 	bounds := []int64{5000, 150, 60, 750} //
 	//nahnes, pcs minscaling = 10,
-	file := "resultDatasets_noisyDOT_vs_DIFFE.txt"
+	file := "resultDatasets_noisyDOT_vs_DiffPIPE.txt"
 
 	if !append {
 		write(file, fmt.Sprint("scaling=", scaling, ", avTime in Setup=Nanoseconds, Enc=Microseconds, KeyGen=Eval=Milliseconds \n"), append)
@@ -93,7 +93,7 @@ func test_realData(secLevel, rounds int, scaling int64, epsilon float64, debug, 
 		aNH := float64(rounds - failedAttemptsNH)
 		aOTNH := float64(rounds - failedAttemptsOTNH)
 		write(file, fmt.Sprint(filename, "- noisyDOT = [", avTimeSetupNH/aNH, ",", avTimeEncNH/aNH, ",", avTimeKeyGenNH/aNH, ",", avTimeEvalNH/aNH, "]\n"), append)
-		write(file, fmt.Sprint(filename, "- DIFFE = [", avTimeSetupOTNH/aOTNH, ",", avTimeEncOTNH/aOTNH, ",", avTimeKeyGenOTNH/aOTNH, ",", avTimeEvalOTNH/aOTNH, "]\n"), append)
+		write(file, fmt.Sprint(filename, "- DiffPIPE = [", avTimeSetupOTNH/aOTNH, ",", avTimeEncOTNH/aOTNH, ",", avTimeKeyGenOTNH/aOTNH, ",", avTimeEvalOTNH/aOTNH, "]\n"), append)
 
 	}
 }
