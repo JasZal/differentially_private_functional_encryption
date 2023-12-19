@@ -16,4 +16,4 @@ To compare the two over real datasets navigate to 'noisyDOT_vs_DiffPIPE_data_set
 To generate figures out of the computed results for the 'noisyDOT_vs_DiffPIPE_single_operations' experiment, you can use the file 'buildfigures_single_operations.m' in the main folder. This file contains octave code, that can be compiled either locally or with an online octave compiler. Please copy your results in the respective place. 
 
 More explanations can be found in the file "artifact_template"
-We additionally provide a dockerfile "Dockerfile" which contains all above statet requirements. 
+We additionally provide a dockerfile "Dockerfile" which installs all above statet dependencies. 
