@@ -36,6 +36,8 @@ tag V0
 
 
 ### Set up the environment
+Either use the provided dockerfile or follow the above instruction:
+
 (Assuming Ubuntu 20.04)
 - install go on your system (https://go.dev/doc/install)
 ```bash
@@ -92,6 +94,7 @@ Main results regarding the implementation are first, a proof of concept, meaning
 
 
 ### Experiments
+Expected results are described in the readme files.
 
 #### Experiment 1: Single Operations
 This experiment measures the single operations of noisyDot and DiffPIPE 
@@ -110,7 +113,7 @@ There are two variables, that can be adapted:
 This experiment measures the single operations of noisyDot and DiffPIPE
 Navigate to the folder ``differentially_private_functional_encryption/noisyDOT_vs_DiffPIPE_data_sets``
 run ```go run .```
-results: time in millisec for setup, encryption, key generation and evaluation for different data sets printed on the shell and also saved in the file "results..."
+results: time for setup [nanosec], encryption [microsec], key generation [millisec]  and evaluation [millisec] for different data sets printed on the shell and also saved in the file "results..."
 
 ## Limitations
 no limitations
