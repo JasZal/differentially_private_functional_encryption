@@ -7,7 +7,7 @@ The example uses a forked and modified implementation of the [gofe library](http
 The addition to the gofe library are two schemes, one a message-and-noise-hiding noisy FE scheme (called noisyDOT) and the other a single-message-and-noise-hiding noisy FE scheme (called DIFFE). 
 Our example shows a comparison between the two schemes for single operations as well as for statistic analysis on real data sets.
 
-# TLTR
+## TL;DR
 
 To run the example first install the forked [gofe library](https://github.com/JasZal/gofe) and the [differential privacy library](https://github.com/google/differential-privacy). Make sure you have installed all dependencies, e.g. bazel.
 For comparison of the two schemes concerning the single operations navigate into the 'noisyDOT_vs_DiffPIPE_single_operations' folder and run main.go.
