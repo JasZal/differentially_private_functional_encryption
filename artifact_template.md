@@ -10,7 +10,7 @@ Requested Badge: Reproducible
 This artifact is the source code that was used to measure the data linked to the Figures 8 - 10 and Table 2 in the Paper. 
 
 ### Security/Privacy Issues and Ethical Concerns
--
+- none
 
 ## Basic Requirements
 
@@ -18,8 +18,8 @@ This artifact is the source code that was used to measure the data linked to the
 at least 8 GB RAM
 
 ### Software Requirements
-OS: Ubuntu
-Software: go, bazel
+- OS: Ubuntu (at least version 20.04)
+- Software: go (at least version 1.21.4), bazel (at least version 6.4.0)
 
 ### Estimated Time and Storage Consumption
 (measured on VM with 8GB RAM - at capacity)
