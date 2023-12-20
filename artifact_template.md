@@ -36,11 +36,25 @@ tag V0
 
 
 ### Set up the environment
-(Assuming Ubuntu)
+(Assuming Ubuntu 20.04)
 - install go on your system (https://go.dev/doc/install)
-- install bazel on your system (https://bazel.build/install)
-- clone and install the differntial privacy library from google (https://github.com/google/differential-privacy)
+```bash
+curl -O -L "https://golang.org/dl/go${GO_VERSION}.linux-${ARCH}.tar.gz" 
+tar -xf "go${GO_VERSION}.linux-${ARCH}.tar.gz" && mv -v go /usr/local
+echo 'export PATH=$PATH:/usr/local/go/bin' >>$HOME/.profile
+echo 'export PATH=$PATH:$HOME/go/bin' >>$HOME/.profile
+```
+  
+- install bazel on your system, at least version 6.4.0 (https://bazel.build/install)
+```bash
+curl -fsSL https://bazel.build/bazel-release.pub.gpg | gpg --dearmor >bazel-archive-keyring.gpg
+mv bazel-archive-keyring.gpg /etc/apt/trusted.gpg.d/
+echo "deb [arch=amd64] https://storage.googleapis.com/bazel-apt stable jdk1.8" | tee /etc/apt/sources.list.d/bazel.list 
+sudo apt  update -y 
+sudo apt install bazel=6.4.0
+```
 
+- clone and install the differntial privacy library from google (https://github.com/google/differential-privacy)
 ```bash 
 git clone https://github.com/google/differential-privacy.git
 cd differential-privacy
